@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADR Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>ADR Detection</h1>
+    <form id="adr-form">
+        <textarea id="text" name="text" rows="4" cols="50" placeholder="Enter patient feedback or social media text"></textarea><br>
+        <button type="button" onclick="predictADR()">Predict ADR</button>
+    </form>
+    <div id="result"></div>
+
+    <h2>Provide Feedback</h2>
+    <form id="feedback-form">
+        <textarea id="feedback" name="feedback" rows="4" cols="50" placeholder="Provide your feedback"></textarea><br>
+        <button type="button" onclick="submitFeedback()">Submit Feedback</button>
+    </form>
+
+    <script>
+        function predictADR() {
+            const text = document.getElementById('text').value;
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ text: text })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerText = `Prediction: ${data.prediction}`;
+            });
+        }
+
+        function submitFeedback() {
+            const feedback = document.getElementById('feedback').value;
+            fetch('/feedback', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ feedback: feedback })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Feedback submitted successfully!');
+            });
+        }
+    </script>
+</body>
+</html>
